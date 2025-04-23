@@ -36,9 +36,4 @@ admin.agent,customer
 - agent account,customer account 
 
 ## Application Run
-- https://youtu.be/PWDjOHFbddk.
 
-## Social Media
-- **[Facebook](https://www.facebook.com/abdelfatahMain)**
-- **[Twitter](https://twitter.com/abdelfatah_1996)**
-- **[Youtube](https://www.youtube.com/channel/UCG-AGtKVzTwCIfiL0J3-6_w)**

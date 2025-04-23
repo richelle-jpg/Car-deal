@@ -21,8 +21,7 @@
                             </div>
                         </div>
                         
-                        <!-- /logo -->
-                        <!-- Search -->
+                     
                         {{-- <div class="navbar-nav align-items-center d-none d-sm-block">
                             <div class="nav-item d-flex align-items-center">
                                 <i class="bx bx-search fs-4 lh-0"></i>
@@ -99,6 +98,11 @@
                                     <li>
                                         <div class="dropdown-divider"></div>
                                     </li>
+                                    <a href="{{ route('analytics.search') }}" class="dropdown-item">
+                                        <i class="bx bx-bar-chart-alt-2 me-2"></i>
+                                        <span class="align-middle">Analytics</span>
+                                    </a>
+                                    
                                     <li>
                                         <form action="{{ route('logout') }}" method="post">
                                             @csrf

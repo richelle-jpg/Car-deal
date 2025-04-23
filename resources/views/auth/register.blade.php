@@ -22,15 +22,13 @@
                         <div class="app-brand justify-content-center">
                             <a href="/" class="app-brand-link gap-2">
                                 <span class="app-brand-logo demo col-10 m-auto">
-                                    <img class="img-fluid" src="{{ asset('assets/img/logo.png') }}"
-                                        alt="">
+                                    <img class="img-fluid" src="{{ asset('assets/img/logo.png') }}" alt="">
                                 </span>
                             </a>
                         </div>
                         <!-- /Logo -->
                         <h4 class="mb-2">Welcome to Cars Deal! 👋</h4>
-                        <form id="formAuthentication" class="mb-3" action="{{ route('register') }}"
-                            method="POST">
+                        <form id="formAuthentication" class="mb-3" action="{{ route('register') }}" method="POST">
                             @csrf
                             <div class="mb-3">
                                 <label for="name" class="form-label">Name</label>
@@ -54,6 +52,54 @@
                                     </span>
                                 @enderror
                             </div>
+                            <div class="mb-3">
+                                <label for="car_type" class="form-label">What type of car do you want?</label>
+                                <select id="car_type" class="form-select @error('car_type') is-invalid @enderror"
+                                    name="car_type">
+                                     <option value="">Select Type</option>
+                                            <option value="Sedan" {{ old('type') == 'Sedan' ? 'selected' : '' }}>Sedan</option>
+                                            <option value="SUV" {{ old('type') == 'SUV' ? 'selected' : '' }}>SUV</option>
+                                            <option value="Truck" {{ old('type') == 'Truck' ? 'selected' : '' }}>Truck</option>
+                                            <option value="Hatchback" {{ old('type') == 'Hatchback' ? 'selected' : '' }}>Hatchback</option>
+                                            <option value="Coupe" {{ old('type') == 'Coupe' ? 'selected' : '' }}>Coupe</option>
+                                            <option value="Convertible" {{ old('type') == 'Convertible' ? 'selected' : '' }}>Convertible</option>
+                                            <option value="Minivan" {{ old('type') == 'Minivan' ? 'selected' : '' }}>Minivan</option>
+                                            <option value="Van" {{ old('type') == 'Van' ? 'selected' : '' }}>Van</option>
+                                            <option value="MPV" {{ old('type') == 'MPV' ? 'selected' : '' }}>MPV</option>
+                                            <option value="Pickup" {{ old('type') == 'Pickup' ? 'selected' : '' }}>Pickup</option>
+                                        </select>
+                                <div id="custom_car_type_div" class="mt-2" style="display: none;">
+                                    <label for="custom_car_type" class="form-label">Please specify your preferred car type</label>
+                                    <input id="custom_car_type" type="text" class="form-control @error('custom_car_type') is-invalid @enderror"
+                                    name="custom_car_type" value="{{ old('custom_car_type') }}" placeholder="Enter custom car type">
+                                </div>
+                                @error('car_type')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            <div class="mb-3">
+                                <label for="budget" class="form-label">Budget</label>
+                                <select id="budget" class="form-select @error('budget') is-invalid @enderror" name="budget">
+                                    <option value="Under 350,000" {{ old('budget') == 'Under 350,000' ? 'selected' : '' }}>Under 350,000</option>
+                                    <option value="350,000 - 1,000,000" {{ old('budget') == '350,000 - 1,000,000' ? 'selected' : '' }}>350,000 - 1,000,000</option>
+                                    <option value="1,000,000 - 2,500,000" {{ old('budget') == '1,000,000 - 2,500,000' ? 'selected' : '' }}>1,000,000 - 2,500,000</option>
+                                    <option value="2,500,000 - 5,000,000" {{ old('budget') == '2,500,000 - 5,000,000' ? 'selected' : '' }}>2,500,000 - 5,000,000</option>
+                                    <option value="Custom">Custom</option>
+                                </select>
+                                <div id="custom_budget_div" class="mt-2" style="display: none;">
+                                    <label for="custom_budget" class="form-label">Please specify your budget</label>
+                                    <input id="custom_budget" type="text" class="form-control @error('custom_budget') is-invalid @enderror"
+                                    name="custom_budget" value="{{ old('custom_budget') }}" placeholder="Enter custom budget">
+                                </div>
+                                @error('budget')
+                                    <span class="invalid-feedback" role="alert">
+                                        <strong>{{ $message }}</strong>
+                                    </span>
+                                @enderror
+                            </div>
+                            
                             <div class="row mb-3">
                                 <div class="col form-password-toggle">
                                     <label class="form-label" for="password">Password</label>
@@ -94,7 +140,7 @@
                                     </label>
                                 </div>
                             </div>
-                            <button class="btn btn-gold d-grid w-100">Sign up</button>
+                            <button class="btn btn-gold d-grid w-100" style="border: 2px solid gold; background-color: gold; color: white;">Sign up</button>
                         </form>
 
                         <p class="text-center">
@@ -143,77 +189,24 @@
                 localStorage.setItem('dark-mode', 'disabled');
             }
         });
+
+        // Show custom input fields based on dropdown selection
+        document.getElementById('car_type').addEventListener('change', function() {
+            var customCarTypeDiv = document.getElementById('custom_car_type_div');
+            if (this.value === 'Custom') {
+                customCarTypeDiv.style.display = 'block';
+            } else {
+                customCarTypeDiv.style.display = 'none';
+            }
+        });
+
+        document.getElementById('budget').addEventListener('change', function() {
+            var customBudgetDiv = document.getElementById('custom_budget_div');
+            if (this.value === 'Custom') {
+                customBudgetDiv.style.display = 'block';
+            } else {
+                customBudgetDiv.style.display = 'none';
+            }
+        });
     </script>
-
-    <style>
-        /* Dark Mode Styles */
-body.dark-mode {
-    background-color: #121212;
-    color: #ffffff;
-}
-
-.dark-mode .card {
-    background-color: #333333;
-    border-color: #444444;
-}
-
-.dark-mode .form-control {
-    background-color: #444444;
-    color: #ffffff;
-    border-color: #555555;
-}
-
-.dark-mode .form-check-input:checked {
-    background-color: #666666;
-    border-color: #666666;
-}
-
-.dark-mode .btn-gold {
-    background-color: #FFD700; /* Gold color */
-    border-color: #FFD700; /* Gold color */
-    color: black;
-}
-
-.dark-mode .text-center a {
-    color: #bb86fc;
-}
-
-/* Make all text dark black in light mode */
-body {
-    color: #333333;
-}
-
-/* Button for toggling dark mode */
-#dark-mode-toggle {
-    position: absolute;
-    top: 10px;
-    right: 10px;
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    font-size: 24px;
-}
-
-/* Gold button styles */
-.btn-gold {
-    background-color: #FFD700;
-    border-color: #FFD700;
-    color: black;
-}
-
-/* Font Awesome icons */
-.fas {
-    font-size: 24px;
-}
-
-/* Styling for gold and black icon */
-#dark-mode-icon {
-    color: black; /* Black color for moon icon */
-}
-
-body.dark-mode #dark-mode-icon {
-    color: #FFD700; /* Gold color for sun icon when dark mode is on */
-}
-
-    </style>
 @endsection

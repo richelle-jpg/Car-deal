@@ -120,4 +120,29 @@ class CarController extends Controller
         $car->delete();
         return response()->json(['status' => true, 'success' => 'Car deleted successfully']);
     }
+    public function show($id)
+{
+    // Retrieve the car by ID or fail if not found
+    $car = Car::findOrFail($id);
+
+    // Get the profile of the current authenticated user (if available)
+    $myProfile = Auth::check() ? Auth::user()->Profile : null;
+
+    // Return the view with the car details and the user's profile
+    return view('homeCustomer.show', compact('car', 'myProfile'));
+}
+public function search(Request $request)
+{
+    $searchTerm = $request->input('search_term');
+
+    $cars = Car::where('name', 'like', "%{$searchTerm}%")
+                ->orWhere('model', 'like', "%{$searchTerm}%")
+                ->paginate(6);
+
+    $myProfile = Auth::check() ? Auth::user()->Profile : null;
+
+    return view('cars.search', compact('cars', 'myProfile'));
+}
+
+
 }

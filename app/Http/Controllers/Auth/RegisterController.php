@@ -12,69 +12,54 @@ use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
 {
-    /*
-    |--------------------------------------------------------------------------
-    | Register Controller
-    |--------------------------------------------------------------------------
-    |
-    | This controller handles the registration of new users as well as their
-    | validation and creation. By default this controller uses a trait to
-    | provide this functionality without requiring any additional code.
-    |
-    */
-
     use RegistersUsers;
 
-    /**
-     * Where to redirect users after registration.
-     *
-     * @var string
-     */
     protected $redirectTo = RouteServiceProvider::HOME;
 
-    /**
-     * Create a new controller instance.
-     *
-     * @return void
-     */
     public function __construct()
     {
         $this->middleware('guest');
     }
 
-    /**
-     * Get a validator for an incoming registration request.
-     *
-     * @param  array  $data
-     * @return \Illuminate\Contracts\Validation\Validator
-     */
     protected function validator(array $data)
     {
         return Validator::make($data, [
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'email', 'max:255', 'unique:users'],
             'password' => ['required', 'string', 'min:8', 'confirmed'],
-            'terms' => ['required'],
+            'terms' => ['accepted'],
+            'car_type' => ['required', 'string'],
+            'budget' => [
+                'required',
+                'string',
+                // New validation rule for budget range
+                function ($attribute, $value, $fail) {
+                    // Allow custom budget or validate the new range
+                    if ($value !== 'Custom' && !in_array($value, [
+                        'Under 350,000', '350,000 - 500,000', '500,000 - 1,000,000', '1,000,000 - 3,000,000', '3,000,000 - 5,000,000', 'Over 5,000,000'
+                    ])) {
+                        return $fail('The budget is not valid. Please choose a valid budget range.');
+                    }
+                },
+            ],
         ]);
     }
 
-    /**
-     * Create a new user instance after a valid registration.
-     *
-     * @param  array  $data
-     * @return \App\Models\User
-     */
     protected function create(array $data)
     {
-        $user =  User::create([
+        $user = User::create([
             'name' => $data['name'],
             'email' => $data['email'],
             'password' => Hash::make($data['password']),
-            'role' => 'Customer',
         ]);
 
+        // Create Profile model with car type and budget
         Profile::create([
-            'user_id' => $user->id
+            'user_id' => $user->id,
+            'car_type' => $data['car_type'],
+            'custom_car_type' => $data['car_type'] === 'Custom' ? $data['custom_car_type'] : null,
+            'budget' => $data['budget'],
+            'custom_budget' => $data['budget'] === 'Custom' ? $data['custom_budget'] : null,
         ]);
 
         return $user;

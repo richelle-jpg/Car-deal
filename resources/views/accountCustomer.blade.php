@@ -4,7 +4,6 @@
     Profile
 @endsection
 
-
 @section('m-content')
     <!-- Content wrapper -->
     <div class="content-wrapper">
@@ -58,7 +57,7 @@
                                     <div class="mb-3 col-md-6">
                                         <label for="name" class="form-label">First Name</label>
                                         <input class="form-control" type="text" id="name" name="name"
-                                            value="{{ Auth::user()->name }}" autofocus placeholder="First Name" />
+                                            value="{{ Auth::user()->name }}" readonly placeholder="First Name" />
                                         <small class="name-error fs-5 text-danger"></small>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -70,13 +69,14 @@
                                     <div class="mb-3 col-md-6">
                                         <label for="email" class="form-label">E-mail</label>
                                         <input class="form-control" type="text" id="email" name="email"
-                                            value="{{ Auth::user()->email }}" placeholder="email@example.com" />
+                                            value="{{ Auth::user()->email }}" readonly placeholder="email@example.com" />
                                         <small class="email-error fs-5 text-danger"></small>
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label for="dob" class="form-label">Date of Birth</label>
                                         <input type="date" class="form-control" id="dob" name="dob"
-                                            @if ($myProfile->dob != null) value="{{ $myProfile->dob }}" @else value="{{ date(now()->format('Y-m-d')) }}" @endif />
+                                            max="{{ now()->subYears(18)->format('Y-m-d') }}"
+                                            @if($myProfile->dob) value="{{ $myProfile->dob }}" @endif />
                                         <small class="dob-error fs-5 text-danger"></small>
                                     </div>
                                     <div class="mb-3 col-md-6">
@@ -93,12 +93,10 @@
                                     </div>
                                     <div class="mb-3 col-md-6">
                                         <label class="form-label" for="gender">Gender</label>
-                                        <select id="gender" class="select2 form-select">
+                                        <select id="gender" name="gender" class="select2 form-select">
                                             <option value="">Select</option>
-                                            <option value="Male" @if ($myProfile->gender == 'Male') selected @endif>Male
-                                            </option>
-                                            <option value="Female" @if ($myProfile->gender == 'Female') selected @endif>Female
-                                            </option>
+                                            <option value="Male" @if($myProfile->gender == 'Male') selected @endif>Male</option>
+                                            <option value="Female" @if($myProfile->gender == 'Female') selected @endif>Female</option>
                                         </select>
                                         <small class="gender-error fs-5 text-danger"></small>
                                     </div>
@@ -111,8 +109,7 @@
                                     </div>
                                 </div>
                                 <div class="mt-2">
-                                    <button type="button" class="btnSaveProfileDetails btn btn-primary me-2">Save
-                                        changes</button>
+                                    <button type="button" class="btnSaveProfileDetails btn btn-primary me-2">Save changes</button>
                                     <button type="reset" class="btn btn-outline-secondary">Cancel</button>
                                 </div>
                             </form>
@@ -164,47 +161,26 @@
                                             <input id="password-confirm" type="password"
                                                 class="form-control @error('password') is-invalid @enderror"
                                                 name="password_confirmation"
-                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;"
-                                                aria-describedby="password" value="{{ old('password_confirmation') }}" />
+                                                placeholder="&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;&#xb7;" />
                                             <span class="input-group-text cursor-pointer"><i
                                                     class="bx bx-hide"></i></span>
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn btn-primary d-grid">Update Password</button>
-                            </form>
-                        </div>
-                    </div>
-                    <div class="card">
-                        <h5 class="card-header">Delete Account</h5>
-                        <div class="card-body">
-                            <div class="mb-3 col-12 mb-0">
-                                <div class="alert alert-warning">
-                                    <h6 class="alert-heading fw-bold mb-1">Are you sure you want to delete your account?
-                                    </h6>
-                                    <p class="mb-0">Once you delete your account, there is no going back. Please
-                                        be certain.</p>
+                                <div class="mt-2">
+                                    <button type="submit" class="btn btn-warning me-2">Save</button>
+                                    <button type="button" class="btn btn-outline-secondary">Cancel</button>
                                 </div>
-                            </div>
-                            <form method="POST" action="{{ route('user_destroy') }}">
-                                @csrf
-                                <div class="form-check mb-3">
-                                    <input class="form-check-input" type="checkbox" name="accountActivation"
-                                        id="accountActivation" />
-                                    <label class="form-check-label" for="accountActivation">I confirm my account
-                                        deactivation</label>
-                                </div>
-                                <button type="submit" class="btn btn-danger deactivate-account">Deactivate Account</button>
                             </form>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-        <!-- / Content -->
     </div>
-    <!-- Content wrapper -->
+    <!-- / Content -->
 @endsection
+
 
 
 @section('scripts')
@@ -223,56 +199,50 @@
 
 
     <script>
-        $(document).ready(function() {
-            $.ajaxSetup({
-                headers: {
-                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-                }
-            });
-            $(document).on('click', '.btnSaveProfileDetails', function(e) {
-                e.preventDefault(e);
-                var data = {
-                    'name': $('#name').val(),
-                    'lname': $('#lname').val(),
-                    'email': $('#email').val(),
-                    'dob': $('#dob').val(),
-                    'phone': $('#phone').val(),
-                    'address': $('#address').val(),
-                    'gender': $('#gender').val(),
-                    'national_id': $('#national_id').val(),
-                    'img_path': $('.img_path').val(),
-                }
+      $(document).ready(function() {
+    $.ajaxSetup({
+        headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        }
+    });
+    
+    $(document).on('click', '.btnSaveProfileDetails', function(e) {
+        e.preventDefault();
+        var data = {
+            'name': $('#name').val(),
+            'lname': $('#lname').val(),
+            'email': $('#email').val(),
+            'dob': $('#dob').val(),
+            'phone': $('#phone').val(),
+            'address': $('#address').val(),
+            'gender': $('#gender').val(),
+            'national_id': $('#national_id').val(),
+        }
 
-                $.ajax({
-                    type: "POSt",
-                    url: "/admin/profile/update",
-                    data: data,
-                    dataType: "JSON",
-                    success: function(response) {
-                        // console.log(response.errors.phone[0]);
-                        $('.phone').removeClass('is-invalid');
-                        $('.national_id').removeClass('is-invalid');
-
-                        $('.phone-error').empty();
-                        $('.national_id-error').empty();
-                        if (response.status == false) {
-                            if (response.errors.phone != null) {
-                                $('.phone').addClass('is-invalid');
-                                $('.phone-error').append(response.errors.phone[0]);
-                            }
-                            if (response.errors.national_id != null) {
-                                $('.national_id').addClass('is-invalid');
-                                $('.national_id-error').append(response.errors.national_id[0]);
-                            }
-                        } else {
-                            toastr.success(response.success);
-                            window.location.reload();
-                        };
-                    }
-                });
-            });
+        $.ajax({
+            type: "POST",
+            url: "/admin/profile/update",
+            data: data,
+            dataType: "JSON",
+            success: function(response) {
+                // Clear previous errors
+                $('.is-invalid').removeClass('is-invalid');
+                $('.text-danger').empty();
+                
+                if (response.status == false) {
+                    // Display validation errors
+                    $.each(response.errors, function(key, value) {
+                        $('#'+key).addClass('is-invalid');
+                        $('.'+key+'-error').append(value[0]);
+                    });
+                } else {
+                    toastr.success(response.success);
+                    window.location.reload();
+                }
+            }
         });
-
+    });
+});
         document.addEventListener("DOMContentLoaded", function () {
             const darkModeToggle = document.getElementById("darkModeToggle");
             const darkModeIcon = document.getElementById("darkModeIcon");

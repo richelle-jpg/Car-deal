@@ -7,6 +7,8 @@ use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\CarPurchaseController;
+use App\Http\Controllers\SearchController;
+use App\Http\Controllers\SearchAnalyticsController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -73,9 +75,12 @@ Route::group(['prefix' => 'admin', 'middleware' => ['auth']], function () {
         Route::post('store', [CarController::class, 'store'])->name('cars-store');
         Route::post('update', [CarController::class, 'update'])->name('cars-update');
     });
+    Route::get('car/{id}', [CarController::class, 'show'])->name('car.show');
+    Route::resource('cars', CarController::class);
+    
 
 
-    //agreement
+        //agreement
     Route::group(['prefix' => 'agreement'], function () {
         Route::get('index/{id}', [AgreementController::class, 'index'])->name('agreement-index');
     });
@@ -100,3 +105,12 @@ Route::group(['prefix' => 'customer', 'middleware' => ['auth']], function () {
 
 
 Route::get('/carpurchase/index', [CarPurchaseController::class, 'index'])->name('carpurchase.index');
+Route::get('/search-cars', [CarController::class, 'search'])->name('search-cars');
+
+
+Route::get('/analytics/search', [SearchAnalyticsController::class, 'index'])->name('analytics.search');
+Route::get('/search-result', [SearchController::class, 'search'])->name('search-result');
+Route::get('/search-cars', [HomeController::class, 'search'])->name('search-cars');
+Route::get('/car/{id}', [CarController::class, 'show'])->name('home.car.show');
+Route::get('/home/car/{id}', [HomeController::class, 'show'])->name('home.car.show');
+Route::get('/analytics/search', [SearchAnalyticsController::class, 'search'])->name('analytics.search');

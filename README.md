@@ -20,6 +20,8 @@ The code is a website that displays cars for sale, and the buyer inquires about 
 - **[Visual Studio Code](https://code.visualstudio.com/)**
 
 ## Application Install
+have 3 multiple role 
+admin.agent,customer
 - git clone git@github.com:abdulfatah1996/carDeal.git
 - cd carDeal
 - composer install
@@ -31,6 +33,7 @@ The code is a website that displays cars for sale, and the buyer inquires about 
 - php artisan serve
 - http://localhost:8000 on browser
 - You have two accounts to login email : administrator@gmail.com | password : administrator.
+- agent account,customer account 
 
 ## Application Run
 - https://youtu.be/PWDjOHFbddk.
